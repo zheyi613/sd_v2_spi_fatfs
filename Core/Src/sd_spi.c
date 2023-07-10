@@ -12,7 +12,6 @@
         HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET)
 #define cs_high()       \
         HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET)
-#define get_tick()  HAL_GetTick()
 #define set_spi_low_clk()                                               \
         do {                                                            \
                 HAL_SPI_DeInit(&hspi1);                                 \
