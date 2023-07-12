@@ -132,7 +132,15 @@ int main(void)
   if (free < 1) {
     Error_Handler();
   }
-  f_puts("test SD card writing\n", &fil);
+  snprintf(buff, 512, "xxxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,"
+                      "xxxx,xxxx,xxxx,xxxx,xxxx\n"
+                      "xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,"
+                      "xxxx,xxxx,xxxx,xxxx,xxxx%s", "\n");
+  HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);
+  for (uint16_t i = 0; i < 500; i++) {
+    f_puts(buff, &fil);
+    HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);
+  }
   fres = f_close(&fil);
   if (fres != FR_OK) {
     Error_Handler();
@@ -141,14 +149,14 @@ int main(void)
   if (fres != FR_OK) {
     Error_Handler();
   }
-  while (f_gets(check_buff, sizeof(buff), &fil)) {
+  while (f_gets(check_buff, sizeof(check_buff), &fil)) {
     CDC_Transmit_FS((uint8_t *)check_buff, 512);
   }
   fres = f_close(&fil);
   if (fres != FR_OK) {
     Error_Handler();
   }
-  fres = f_mount(NULL, "", 1);
+  fres = f_mount(NULL, "", 0);
   if (fres != FR_OK) {
     Error_Handler();
   }
