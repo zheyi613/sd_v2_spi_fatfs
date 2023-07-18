@@ -21,7 +21,7 @@
 #define set_spi_high_clk()                                              \
         do {                                                            \
                 HAL_SPI_DeInit(&hspi1);                                 \
-                hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;\
+                hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8; \
                 HAL_SPI_Init(&hspi1);                                   \
         } while (0)
 

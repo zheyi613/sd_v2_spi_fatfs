@@ -117,6 +117,7 @@ int main(void)
   if (fres != FR_OK) {
     Error_Handler();
   }
+  HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);
   fres = f_open(&fil, "test1.txt", FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
   if (fres != FR_OK) {
     Error_Handler();
