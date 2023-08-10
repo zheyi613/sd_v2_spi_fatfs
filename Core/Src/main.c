@@ -165,12 +165,15 @@ int main(void)
   if (fres != FR_OK) {
     Error_Handler();
   }
+  len = snprintf((char *)msg, 200, "Complete!!%s", "\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    CDC_Transmit_FS(msg, len);
+    HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
