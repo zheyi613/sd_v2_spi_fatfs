@@ -4,10 +4,21 @@
 #include "spi.h"
 #include <string.h>
 
+#include "gpio.h"
+
 #define spi_txrx(pTxData, pRxData, size)        \
-        HAL_SPI_TransmitReceive(&hspi1, pTxData, pRxData, size, 100)
+        do {                                    \
+                HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);           \
+                HAL_SPI_TransmitReceive(&hspi1, pTxData, pRxData, size, 100);\
+                HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);           \
+        } while (0)
 #define spi_tx(pData, size)                     \
-        HAL_SPI_Transmit(&hspi1, pData, size, 100);
+        do {                                    \
+                HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);           \
+                HAL_SPI_Transmit(&hspi1, pData, size, 100);             \
+                HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);           \
+        } while (0)
+
 #define cs_low()        \
         HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET)
 #define cs_high()       \
