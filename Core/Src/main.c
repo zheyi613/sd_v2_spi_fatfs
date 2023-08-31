@@ -113,6 +113,7 @@ int main(void)
   FRESULT fres;
   DWORD fre_clust;
   uint32_t total, free;
+  UINT buff_size, remain;
   fres = f_mount(&fs, "", 0);
   if (fres != FR_OK) {
     Error_Handler();
@@ -133,14 +134,16 @@ int main(void)
   if (free < 1) {
     Error_Handler();
   }
-  snprintf(buff, 512, "xxxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,"
-                      "xxxx,xxxx,xxxx,xxxx,xxxx\n"
-                      "xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,"
-                      "xxxx,xxxx,xxxx,xxxx,xxxx%s", "\n");
-  HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);
+  buff_size = snprintf(buff, 512, "xxxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,"
+                                  "xxxx,xxxx,xxxx,xxxx,xxxx\n"
+                                  "xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,xxxx,"
+                                  "xxxx,xxxx,xxxx,xxxx,xxxx%s", "\n");
   for (uint16_t i = 0; i < 500; i++) {
-    f_puts(buff, &fil);
-    HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);
+    fres = f_write(&fil, buff, buff_size, &remain);
+    if (fres != FR_OK) {
+      Error_Handler();
+    }
+    // f_puts(buff, &fil);
   }
   fres = f_close(&fil);
   if (fres != FR_OK) {
@@ -157,16 +160,20 @@ int main(void)
   if (fres != FR_OK) {
     Error_Handler();
   }
+  HAL_GPIO_TogglePin(TEST_GPIO_Port, TEST_Pin);
   fres = f_mount(NULL, "", 0);
   if (fres != FR_OK) {
     Error_Handler();
   }
+  len = snprintf((char *)msg, 200, "Complete!!%s", "\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    CDC_Transmit_FS(msg, len);
+    HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
