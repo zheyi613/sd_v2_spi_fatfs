@@ -24,6 +24,7 @@
                 hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8; \
                 HAL_SPI_Init(&hspi1);                                   \
         } while (0)
+#define delay_ms(ms)    HAL_Delay(ms)
 
 #define CMD_SIZE        6      /* 6 bytes long and start with MSB */
 
@@ -77,6 +78,7 @@ static int wait_ready(WORD ms)
         do {
                 cs_high();
                 spi_rx(&token, 1); /* Nds = 1 */
+                delay_ms(2);
                 cs_low();
                 spi_rx(&token, 1);
         } while ((token != 0xFF) && Timer2);
@@ -221,8 +223,10 @@ DSTATUS disk_initialize(BYTE drv)
         // send_cmd(CMD58, 0, R); /* get supported voltage (not mandantory) */
         /* Set HCS = 1 and activate card initialization process */
         Timer1 = 1000; /* 1 sec timout */
-        while (send_cmd(ACMD41, 1UL << 30) && Timer1)
-                ;
+        do {
+                resp[0] = send_cmd(ACMD41, 1UL << 30);
+                delay_ms(2);
+        } while (resp[0] && Timer1);
         if (!Timer1)
                 return stat;
         /* read OCR */
